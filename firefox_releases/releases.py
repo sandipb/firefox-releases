@@ -1,8 +1,10 @@
 """ Find the release notes for the latest version of Firefox and print it as a list. """
+import json
+import logging
+import os
 from dataclasses import dataclass
 from datetime import date, datetime
-import os
-import logging
+from enum import Enum
 from urllib.parse import urljoin
 
 import requests
@@ -12,8 +14,19 @@ from bs4 import BeautifulSoup
 MAX_RELEASE_PARSE = 50
 
 RELEASE_LIST_URL = "https://www.mozilla.org/en-US/firefox/releases/"
+WT_API_RELEASES_URL = "https://whattrainisitnow.com/api/firefox/releases/"
+WT_API_ESR_URL = "https://whattrainisitnow.com/api/esr/releases/"
 
 logger = logging.getLogger(__name__)
+
+
+class Channel(Enum):
+    """Enum for the different Firefox channels."""
+
+    RELEASE = "release"
+    ESR = "esr"
+    NIGHTLY = "nightly"
+    BETA = "beta"
 
 
 @dataclass
@@ -24,6 +37,7 @@ class Release:
     version: tuple[int, int, int]
     url: str
     date: date
+    channel: Channel
 
 
 def version_to_tuple(version: str) -> tuple[int, int, int]:
@@ -54,6 +68,65 @@ def _fetch_url_content(url: str) -> str:
     response = requests.get(url, timeout=5)
     response.raise_for_status()
     return response.content
+
+
+def version_to_release_url(version: str) -> str:
+    """Convert a version string to a release URL."""
+    return f"https://www.mozilla.org/en-US/firefox/{version.strip()}/releasenotes/"
+
+
+def get_release_dates(
+    release_list_url=WT_API_RELEASES_URL,
+    # esr_list_url=WT_API_ESR_URL,
+    oldest=date.today().replace(date.today().year - 1),
+) -> list[Release]:
+    """Fetch the list of releases from the WT API and return the dates of the releases."""
+    logger.debug("Fetching release list from %s", release_list_url)
+    release_list: list[Release] = []
+    try:
+        releases_content = _fetch_url_content(release_list_url)
+        # esr_content = _fetch_url_content(esr_list_url)
+        release_data = json.loads(releases_content)
+        # esr_data = json.loads(esr_content)
+    except requests.exceptions.RequestException as e:
+        logger.error("Error fetching release list: %s", e)
+        return []
+    except json.JSONDecodeError as e:
+        logger.error("Error decoding release list: %s", e)
+        return []
+    logger.debug("Parsing release list")
+    for release_name, release_date_str in release_data.items():
+        release_date = datetime.strptime(release_date_str, "%Y-%m-%d").date()
+        if release_date < oldest:
+            logger.debug(
+                "Ignoring release %s with date %s, as it is older than cutoff by %s",
+                release_name,
+                release_date,
+                oldest - release_date,
+            )
+            continue
+        release_channel = Channel.RELEASE
+        # if release_name in esr_data:
+        #     release_channel = Channel.ESR
+        release_url = version_to_release_url(release_name)
+        release_list.append(
+            Release(
+                name=release_name,
+                url=release_url,
+                date=release_date,
+                version=version_to_tuple(release_name),
+                channel=release_channel,
+            )
+        )
+    release_list.sort(
+        key=lambda release: (
+            release.date if release.date else date.min,
+            release.version,
+            release.channel,
+        ),
+        reverse=True,
+    )
+    return release_list
 
 
 def find_release_notes(
@@ -87,6 +160,7 @@ def find_release_notes(
                         url=absolute_url,
                         date=release_date,
                         version=version_to_tuple(a_tag.text.strip()),
+                        channel=Channel.RELEASE,
                     )
                 )
                 count += 1

@@ -1,4 +1,5 @@
-from datetime import date
+# pylint: disable=C0114
+from datetime import date  # noqa: E402
 import pathlib
 
 import pytest
@@ -7,6 +8,7 @@ from firefox_releases.releases import (
     find_release_date,
     find_release_notes,
     version_to_tuple,
+    get_release_dates,
     RELEASE_LIST_URL,
 )
 
@@ -24,6 +26,15 @@ def release_list_content():
 def release_content():
     """Return the content of the release list page."""
     with pathlib.Path(__file__).parent.joinpath("testdata", "122_0.html").open(
+        encoding="utf-8"
+    ) as f:
+        return f.read()
+
+
+@pytest.fixture
+def wt_releases_content():
+    """Return the content of the release list page."""
+    with pathlib.Path(__file__).parent.joinpath("testdata", "wt_releases.json").open(
         encoding="utf-8"
     ) as f:
         return f.read()
@@ -71,3 +82,19 @@ def test_find_release_date(mocker, release_content):  # pylint: disable=redefine
         "https://www.mozilla.org/en-US/firefox/122.0/releasenotes/"
     )
     assert release_date == date(2024, 1, 23)
+
+
+def test_get_release_dates(mocker, wt_releases_content):  # pylint: disable=redefined-outer-name
+    """Test find_release_notes()."""
+
+    mocker.patch(
+        "firefox_releases.releases._fetch_url_content",
+        return_value=wt_releases_content,
+    )
+    releases = get_release_dates()
+    assert releases[0].name == "122.0"
+    assert (
+        releases[0].url == "https://www.mozilla.org/en-US/firefox/122.0/releasenotes/"
+    )
+    assert releases[0].date == date(2024, 1, 23)
+    assert releases[0].version == (122, 0, 0)

@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """Script to generate an RSS feed of Firefox releases."""
 import argparse
+import json
 import logging
 import pathlib
 from datetime import datetime
 
 from jinja2 import Environment, FileSystemLoader
 
-from firefox_releases import find_release_notes
+from firefox_releases import get_release_dates
 
 THIS_DIR = pathlib.Path(__file__).parent
 
@@ -72,9 +73,9 @@ def main(args: argparse.Namespace):
     html_template = environment.get_template("index.html.j2")
 
     logging.info("Fetching release notes")
-    releases = find_release_notes(
-        max_num=args.num_entries, max_parse=int(1.5 * args.num_entries)
-    )
+    # releases = find_release_notes(
+    #     max_num=args.num_entries, max_parse=int(1.5 * args.num_entries)
+    releases = get_release_dates()[: args.num_entries]
 
     # Fill in the entries
     entries: list[dict] = []  # pylint: disable=invalid-name
@@ -96,6 +97,8 @@ def main(args: argparse.Namespace):
     rss_content = rss_template.render(releases=entries)
     html_file_name = pathlib.Path(args.output_dir) / f"{args.filename_prefix}.html"
     html_content = html_template.render(releases=entries, latest=entries[0])
+    json_file_name = pathlib.Path(args.output_dir) / f"{args.filename_prefix}.json"
+    json_content = json.dumps(entries)
 
     logging.info("Generating RSS feed to %s", rss_file_name)
     with open(rss_file_name, "w", encoding="utf-8") as f:
@@ -104,6 +107,10 @@ def main(args: argparse.Namespace):
     logging.info("Generating HTML content to %s", html_file_name)
     with open(html_file_name, "w", encoding="utf-8") as f:
         f.write(html_content)
+
+    logging.info("Generating JSON content to %s", json_file_name)
+    with open(json_file_name, "w", encoding="utf-8") as f:
+        f.write(json_content)
 
 
 if __name__ == "__main__":
