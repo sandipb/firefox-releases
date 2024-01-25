@@ -13,14 +13,6 @@
       </item>
       
       <item>
-        <title>115.7.0</title>
-        <description>Firefox release 115.7.0 was released on January 23, 2024.</description>
-        <link>https://www.mozilla.org/en-US/firefox/115.7.0/releasenotes/</link>
-        <guid>https://www.mozilla.org/en-US/firefox/115.7.0/releasenotes/</guid>
-        <pubDate>Tue, 23 Jan 2024 00:00:00 +0000</pubDate>
-      </item>
-      
-      <item>
         <title>121.0.1</title>
         <description>Firefox release 121.0.1 was released on January 09, 2024.</description>
         <link>https://www.mozilla.org/en-US/firefox/121.0.1/releasenotes/</link>
@@ -33,14 +25,6 @@
         <description>Firefox release 121.0 was released on December 19, 2023.</description>
         <link>https://www.mozilla.org/en-US/firefox/121.0/releasenotes/</link>
         <guid>https://www.mozilla.org/en-US/firefox/121.0/releasenotes/</guid>
-        <pubDate>Tue, 19 Dec 2023 00:00:00 +0000</pubDate>
-      </item>
-      
-      <item>
-        <title>115.6.0</title>
-        <description>Firefox release 115.6.0 was released on December 19, 2023.</description>
-        <link>https://www.mozilla.org/en-US/firefox/115.6.0/releasenotes/</link>
-        <guid>https://www.mozilla.org/en-US/firefox/115.6.0/releasenotes/</guid>
         <pubDate>Tue, 19 Dec 2023 00:00:00 +0000</pubDate>
       </item>
       
@@ -61,14 +45,6 @@
       </item>
       
       <item>
-        <title>115.5.0</title>
-        <description>Firefox release 115.5.0 was released on November 21, 2023.</description>
-        <link>https://www.mozilla.org/en-US/firefox/115.5.0/releasenotes/</link>
-        <guid>https://www.mozilla.org/en-US/firefox/115.5.0/releasenotes/</guid>
-        <pubDate>Tue, 21 Nov 2023 00:00:00 +0000</pubDate>
-      </item>
-      
-      <item>
         <title>119.0.1</title>
         <description>Firefox release 119.0.1 was released on November 07, 2023.</description>
         <link>https://www.mozilla.org/en-US/firefox/119.0.1/releasenotes/</link>
@@ -81,14 +57,6 @@
         <description>Firefox release 119.0 was released on October 24, 2023.</description>
         <link>https://www.mozilla.org/en-US/firefox/119.0/releasenotes/</link>
         <guid>https://www.mozilla.org/en-US/firefox/119.0/releasenotes/</guid>
-        <pubDate>Tue, 24 Oct 2023 00:00:00 +0000</pubDate>
-      </item>
-      
-      <item>
-        <title>115.4.0</title>
-        <description>Firefox release 115.4.0 was released on October 24, 2023.</description>
-        <link>https://www.mozilla.org/en-US/firefox/115.4.0/releasenotes/</link>
-        <guid>https://www.mozilla.org/en-US/firefox/115.4.0/releasenotes/</guid>
         <pubDate>Tue, 24 Oct 2023 00:00:00 +0000</pubDate>
       </item>
       
@@ -109,26 +77,10 @@
       </item>
       
       <item>
-        <title>115.3.1</title>
-        <description>Firefox release 115.3.1 was released on September 28, 2023.</description>
-        <link>https://www.mozilla.org/en-US/firefox/115.3.1/releasenotes/</link>
-        <guid>https://www.mozilla.org/en-US/firefox/115.3.1/releasenotes/</guid>
-        <pubDate>Thu, 28 Sep 2023 00:00:00 +0000</pubDate>
-      </item>
-      
-      <item>
         <title>118.0</title>
         <description>Firefox release 118.0 was released on September 26, 2023.</description>
         <link>https://www.mozilla.org/en-US/firefox/118.0/releasenotes/</link>
         <guid>https://www.mozilla.org/en-US/firefox/118.0/releasenotes/</guid>
-        <pubDate>Tue, 26 Sep 2023 00:00:00 +0000</pubDate>
-      </item>
-      
-      <item>
-        <title>115.3.0</title>
-        <description>Firefox release 115.3.0 was released on September 26, 2023.</description>
-        <link>https://www.mozilla.org/en-US/firefox/115.3.0/releasenotes/</link>
-        <guid>https://www.mozilla.org/en-US/firefox/115.3.0/releasenotes/</guid>
         <pubDate>Tue, 26 Sep 2023 00:00:00 +0000</pubDate>
       </item>
       
@@ -141,26 +93,10 @@
       </item>
       
       <item>
-        <title>115.2.1</title>
-        <description>Firefox release 115.2.1 was released on September 12, 2023.</description>
-        <link>https://www.mozilla.org/en-US/firefox/115.2.1/releasenotes/</link>
-        <guid>https://www.mozilla.org/en-US/firefox/115.2.1/releasenotes/</guid>
-        <pubDate>Tue, 12 Sep 2023 00:00:00 +0000</pubDate>
-      </item>
-      
-      <item>
         <title>117.0</title>
         <description>Firefox release 117.0 was released on August 29, 2023.</description>
         <link>https://www.mozilla.org/en-US/firefox/117.0/releasenotes/</link>
         <guid>https://www.mozilla.org/en-US/firefox/117.0/releasenotes/</guid>
-        <pubDate>Tue, 29 Aug 2023 00:00:00 +0000</pubDate>
-      </item>
-      
-      <item>
-        <title>115.2.0</title>
-        <description>Firefox release 115.2.0 was released on August 29, 2023.</description>
-        <link>https://www.mozilla.org/en-US/firefox/115.2.0/releasenotes/</link>
-        <guid>https://www.mozilla.org/en-US/firefox/115.2.0/releasenotes/</guid>
         <pubDate>Tue, 29 Aug 2023 00:00:00 +0000</pubDate>
       </item>
       
@@ -193,14 +129,6 @@
         <description>Firefox release 116.0 was released on August 01, 2023.</description>
         <link>https://www.mozilla.org/en-US/firefox/116.0/releasenotes/</link>
         <guid>https://www.mozilla.org/en-US/firefox/116.0/releasenotes/</guid>
-        <pubDate>Tue, 01 Aug 2023 00:00:00 +0000</pubDate>
-      </item>
-      
-      <item>
-        <title>115.1.0</title>
-        <description>Firefox release 115.1.0 was released on August 01, 2023.</description>
-        <link>https://www.mozilla.org/en-US/firefox/115.1.0/releasenotes/</link>
-        <guid>https://www.mozilla.org/en-US/firefox/115.1.0/releasenotes/</guid>
         <pubDate>Tue, 01 Aug 2023 00:00:00 +0000</pubDate>
       </item>
       
@@ -242,6 +170,78 @@
         <link>https://www.mozilla.org/en-US/firefox/114.0.2/releasenotes/</link>
         <guid>https://www.mozilla.org/en-US/firefox/114.0.2/releasenotes/</guid>
         <pubDate>Tue, 20 Jun 2023 00:00:00 +0000</pubDate>
+      </item>
+      
+      <item>
+        <title>114.0.1</title>
+        <description>Firefox release 114.0.1 was released on June 09, 2023.</description>
+        <link>https://www.mozilla.org/en-US/firefox/114.0.1/releasenotes/</link>
+        <guid>https://www.mozilla.org/en-US/firefox/114.0.1/releasenotes/</guid>
+        <pubDate>Fri, 09 Jun 2023 00:00:00 +0000</pubDate>
+      </item>
+      
+      <item>
+        <title>114.0</title>
+        <description>Firefox release 114.0 was released on June 06, 2023.</description>
+        <link>https://www.mozilla.org/en-US/firefox/114.0/releasenotes/</link>
+        <guid>https://www.mozilla.org/en-US/firefox/114.0/releasenotes/</guid>
+        <pubDate>Tue, 06 Jun 2023 00:00:00 +0000</pubDate>
+      </item>
+      
+      <item>
+        <title>113.0.2</title>
+        <description>Firefox release 113.0.2 was released on May 23, 2023.</description>
+        <link>https://www.mozilla.org/en-US/firefox/113.0.2/releasenotes/</link>
+        <guid>https://www.mozilla.org/en-US/firefox/113.0.2/releasenotes/</guid>
+        <pubDate>Tue, 23 May 2023 00:00:00 +0000</pubDate>
+      </item>
+      
+      <item>
+        <title>113.0.1</title>
+        <description>Firefox release 113.0.1 was released on May 12, 2023.</description>
+        <link>https://www.mozilla.org/en-US/firefox/113.0.1/releasenotes/</link>
+        <guid>https://www.mozilla.org/en-US/firefox/113.0.1/releasenotes/</guid>
+        <pubDate>Fri, 12 May 2023 00:00:00 +0000</pubDate>
+      </item>
+      
+      <item>
+        <title>113.0</title>
+        <description>Firefox release 113.0 was released on May 09, 2023.</description>
+        <link>https://www.mozilla.org/en-US/firefox/113.0/releasenotes/</link>
+        <guid>https://www.mozilla.org/en-US/firefox/113.0/releasenotes/</guid>
+        <pubDate>Tue, 09 May 2023 00:00:00 +0000</pubDate>
+      </item>
+      
+      <item>
+        <title>112.0.2</title>
+        <description>Firefox release 112.0.2 was released on April 25, 2023.</description>
+        <link>https://www.mozilla.org/en-US/firefox/112.0.2/releasenotes/</link>
+        <guid>https://www.mozilla.org/en-US/firefox/112.0.2/releasenotes/</guid>
+        <pubDate>Tue, 25 Apr 2023 00:00:00 +0000</pubDate>
+      </item>
+      
+      <item>
+        <title>112.0.1</title>
+        <description>Firefox release 112.0.1 was released on April 17, 2023.</description>
+        <link>https://www.mozilla.org/en-US/firefox/112.0.1/releasenotes/</link>
+        <guid>https://www.mozilla.org/en-US/firefox/112.0.1/releasenotes/</guid>
+        <pubDate>Mon, 17 Apr 2023 00:00:00 +0000</pubDate>
+      </item>
+      
+      <item>
+        <title>112.0</title>
+        <description>Firefox release 112.0 was released on April 11, 2023.</description>
+        <link>https://www.mozilla.org/en-US/firefox/112.0/releasenotes/</link>
+        <guid>https://www.mozilla.org/en-US/firefox/112.0/releasenotes/</guid>
+        <pubDate>Tue, 11 Apr 2023 00:00:00 +0000</pubDate>
+      </item>
+      
+      <item>
+        <title>111.0.1</title>
+        <description>Firefox release 111.0.1 was released on March 21, 2023.</description>
+        <link>https://www.mozilla.org/en-US/firefox/111.0.1/releasenotes/</link>
+        <guid>https://www.mozilla.org/en-US/firefox/111.0.1/releasenotes/</guid>
+        <pubDate>Tue, 21 Mar 2023 00:00:00 +0000</pubDate>
       </item>
       
     </channel>
