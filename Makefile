@@ -1,5 +1,7 @@
 .PHONY: requirements check test generate serve
 
+DOCS_URL:=firefox-releases.foss-community.org
+
 requirements: requirements.txt
 
 requirements.txt: pyproject.toml poetry.lock
@@ -13,6 +15,7 @@ check:
 
 generate:
 	mkdir -p public
+	echo $(DOCS_URL) > public/CNAME
 	poetry run python3 ./generate.py -o public -n 30
 
 serve:
