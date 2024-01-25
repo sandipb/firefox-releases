@@ -1,7 +1,7 @@
 <rss version="2.0">
     <channel>
       <title>Firefox Releases</title>
-      <link>https://sandipb.github.io/firefox_releases/</link>
+      <link>https://firefox-releases.foss-community.org/</link>
       <description>The latest Firefox releases</description>
       
       <item>
