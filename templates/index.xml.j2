@@ -1,0 +1,16 @@
+<rss version="2.0">
+    <channel>
+      <title>Firefox Releases</title>
+      <link>https://sandipb.github.io/firefox_releases/</link>
+      <description>The latest Firefox releases</description>
+      {% for release in releases %}
+      <item>
+        <title>{{ release.name }}</title>
+        <description>Firefox release {{ release.name }} was released on {{ release.date }}.</description>
+        <link>{{ release.url }}</link>
+        <guid>{{ release.url }}</guid>
+        <pubDate>{{ release.time }}</pubDate>
+      </item>
+      {% endfor %}
+    </channel>
+  </rss>

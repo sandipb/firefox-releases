@@ -12,6 +12,7 @@ packages = [{ include = "firefox_releases" }]
 python = "^3.12"
 beautifulsoup4 = "^4.12.3"
 requests = "^2.31.0"
+jinja2 = "^3.1.3"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.1.14"

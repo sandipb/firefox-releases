@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="This is a list of the latest Firefox releases in chronological order">
+    <meta name="author" content="Sandip Bhattacharya">
+    <title>Firefox Releases</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1>Firefox Releases</h1>
+                <p>
+                    This is a list of versions released by Mozilla Firefox chronologically. The list is updated every hour. There is an RSS feed available <a href="index.xml">here</a>.
+                </p>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Release Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for release in releases %}
+                        <tr>
+                            <td>{{ release.date }}</td>
+                            <td>{{ release.name }}</td>
+                            <td><a href="{{ release.url }}">{{ release.url }}</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script> -->
+
+</body>
+</html>
