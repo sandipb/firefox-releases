@@ -1,4 +1,4 @@
-.PHONY: requirements check test
+.PHONY: requirements check test generate serve
 
 requirements: requirements.txt
 
@@ -9,4 +9,11 @@ test:
 	poetry run pytest firefox_releases/
 
 check:
-	poetry run ruff check generate_rss.py firefox_releases/
+	poetry run ruff check generate.py firefox_releases/
+
+generate:
+	mkdir -p public
+	poetry run python3 ./generate.py -o public -n 30
+
+serve:
+	poetry run python3 -m http.server --directory public
