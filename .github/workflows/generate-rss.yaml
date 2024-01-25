@@ -39,10 +39,10 @@ jobs:
           echo "Changed files: '${files}'"
           echo "list=${files}" >> $GITHUB_OUTPUT
 
-      - name: Run pre-commit on Changed Files
+      - name: Generate RSS, HTML and JSON
         run: |
           mkdir -p public
-          poetry run python3 ./generate.py -o public -n 30
+          make generate
 
       - name: Publish to ghpages
         uses: peaceiris/actions-gh-pages@v3

@@ -5,9 +5,9 @@ repos:
   rev: v3.2.0
   hooks:
     - id: trailing-whitespace
-      exclude: \.(xml|html|rss)$
+      exclude: \.(xml|html|rss|json)$
     - id: end-of-file-fixer
-      exclude: \.(xml|html|rss)$
+      exclude: \.(xml|html|rss|json)$
     - id: check-yaml
 
 - repo: local
