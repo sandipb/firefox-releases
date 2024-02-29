@@ -3,7 +3,7 @@ import json
 import logging
 import os
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from enum import Enum
 from urllib.parse import urljoin
 
@@ -78,7 +78,7 @@ def version_to_release_url(version: str) -> str:
 def get_release_dates(
     release_list_url=WT_API_RELEASES_URL,
     # esr_list_url=WT_API_ESR_URL,
-    oldest=date.today().replace(date.today().year - 1),
+    oldest=date.today() - timedelta(days=365),
 ) -> list[Release]:
     """Fetch the list of releases from the WT API and return the dates of the releases."""
     logger.debug("Fetching release list from %s", release_list_url)
