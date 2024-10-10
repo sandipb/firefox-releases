@@ -1,22 +1,24 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v3.2.0
-  hooks:
-    - id: trailing-whitespace
-      exclude: \.(xml|html|rss|json)$
-    - id: end-of-file-fixer
-      exclude: \.(xml|html|rss|json)$
-    - id: check-yaml
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: \.(xml|html|rss|json)$
+      - id: end-of-file-fixer
+        exclude: \.(xml|html|rss|json)$
+      - id: check-yaml
 
-- repo: local
-  hooks:
-    - id: tests
-      name: pytest-check
-      entry: make test
-      language: system
-    - id: validate
-      name: validate
-      entry: make check
-      language: system
+  - repo: local
+    hooks:
+      - id: tests
+        name: pytest-check
+        entry: task test
+        language: system
+        pass_filenames: false
+      - id: validate
+        name: validate
+        entry: task lint
+        language: system
+        pass_filenames: false

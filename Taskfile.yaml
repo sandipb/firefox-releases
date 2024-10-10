@@ -1,0 +1,81 @@
+# Taskfile.yaml
+version: "3"
+
+vars:
+  DOCS_URL: "firefox-releases.foss-community.org"
+
+tasks:
+  generate:
+    desc: Generate RSS, HTML and JSON files for latest Firefox releases
+    cmds:
+      - mkdir -p public
+      - echo "{{ .DOCS_URL }}" > public/CNAME
+      - uv run ./generate.py -o public -n 30
+
+  test:
+    desc: Run tests using pytest
+    cmds:
+      - uv run pytest firefox_releases
+  lint:
+    desc: Run linting using ruff
+    cmds:
+      - uv run ruff check .
+  format:
+    desc: Format code using ruff in fix mode
+    cmds:
+      - uv run ruff check --fix .
+  pre-commit:
+    desc: Run pre-commit hooks on all files
+    cmds:
+      - uv run pre-commit run --all-files
+  clean:
+    desc: Clean up generated files in the public directory
+    cmds:
+      - rm -rf public
+  deploy:
+    desc: Deploy the project by triggering the generate-rss workflow on GitHub Actions
+    cmds:
+      - gh workflow run generate-rss --json workflow_dispatch={}
+  help:
+    desc: Show this help message
+    cmds:
+      - task help
+  all:
+    desc: "Run all tasks: generate, test, lint, format, pre-commit, build, publish, and deploy"
+    cmds:
+      - task generate
+      - task test
+      - task lint
+      - task format
+      - task pre-commit
+      - task build
+      - task publish
+      - task deploy
+
+  venv:
+    desc: Create a virtual environment using uv
+    cmds:
+      - uv venv
+      - uv sync
+
+  act:
+    desc: Run the GitHub Actions locally using act
+
+    cmds:
+      - cmd: |
+          if command -v gh > /dev/null; then
+              # Don't want to interfere with existing GITHUB_TOKEN
+              export GHTOKEN=$(gh auth token)
+          fi
+        silent: true
+      - |
+        act workflow_dispatch \
+          -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-latest \
+          --container-architecture=linux/arm64 \
+          --pull=false \
+          -s GITHUB_TOKEN=$GHTOKEN
+
+  serve:
+    desc: Serve the generated files using uv
+    cmds:
+      - uv run python -m http.server --directory public

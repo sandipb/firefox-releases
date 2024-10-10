@@ -16,28 +16,16 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version-file: "pyproject.toml"
 
-      #----------------------------------------------
-      #  -----  install & configure poetry  -----
-      #----------------------------------------------
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
         with:
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-          installer-parallel: true
+          enable-cache: true
+          cache-dependency-glob: "*.py"
 
-      - name: Load cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v3
-        with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-
-      - name: Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction
+      - name: Install Task
+        uses: arduino/setup-task@v2
 
       - name: Get Changed Files
         id: files
@@ -47,4 +35,4 @@ jobs:
           echo "list=${files}" >> $GITHUB_OUTPUT
 
       - name: Run pre-commit on Changed Files
-        run: poetry run pre-commit run --files ${{ steps.files.outputs.list }}
+        run: uv run pre-commit run --files ${{ steps.files.outputs.list }}
