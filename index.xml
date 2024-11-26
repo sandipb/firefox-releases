@@ -5,6 +5,14 @@
       <description>The latest Firefox releases</description>
       
       <item>
+        <title>133.0</title>
+        <description>Firefox release 133.0 was released on November 26, 2024.</description>
+        <link>https://www.mozilla.org/en-US/firefox/133.0/releasenotes/</link>
+        <guid>https://www.mozilla.org/en-US/firefox/133.0/releasenotes/</guid>
+        <pubDate>Tue, 26 Nov 2024 00:00:00 +0000</pubDate>
+      </item>
+      
+      <item>
         <title>132.0.2</title>
         <description>Firefox release 132.0.2 was released on November 12, 2024.</description>
         <link>https://www.mozilla.org/en-US/firefox/132.0.2/releasenotes/</link>
@@ -234,14 +242,6 @@
         <link>https://www.mozilla.org/en-US/firefox/122.0/releasenotes/</link>
         <guid>https://www.mozilla.org/en-US/firefox/122.0/releasenotes/</guid>
         <pubDate>Tue, 23 Jan 2024 00:00:00 +0000</pubDate>
-      </item>
-      
-      <item>
-        <title>121.0.1</title>
-        <description>Firefox release 121.0.1 was released on January 09, 2024.</description>
-        <link>https://www.mozilla.org/en-US/firefox/121.0.1/releasenotes/</link>
-        <guid>https://www.mozilla.org/en-US/firefox/121.0.1/releasenotes/</guid>
-        <pubDate>Tue, 09 Jan 2024 00:00:00 +0000</pubDate>
       </item>
       
     </channel>
