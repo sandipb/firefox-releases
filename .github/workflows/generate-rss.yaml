@@ -21,9 +21,12 @@ jobs:
         with:
           enable-cache: true
           cache-dependency-glob: "*.py"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Task
         uses: arduino/setup-task@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get Changed Files
         id: files
