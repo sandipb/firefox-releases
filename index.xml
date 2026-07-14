@@ -5,6 +5,14 @@
       <description>The latest Firefox releases</description>
       
       <item>
+        <title>152.0.6</title>
+        <description>Firefox release 152.0.6 was released on July 14, 2026.</description>
+        <link>https://www.mozilla.org/en-US/firefox/152.0.6/releasenotes/</link>
+        <guid>https://www.mozilla.org/en-US/firefox/152.0.6/releasenotes/</guid>
+        <pubDate>Tue, 14 Jul 2026 00:00:00 +0000</pubDate>
+      </item>
+      
+      <item>
         <title>152.0.5</title>
         <description>Firefox release 152.0.5 was released on July 07, 2026.</description>
         <link>https://www.mozilla.org/en-US/firefox/152.0.5/releasenotes/</link>
@@ -234,14 +242,6 @@
         <link>https://www.mozilla.org/en-US/firefox/145.0/releasenotes/</link>
         <guid>https://www.mozilla.org/en-US/firefox/145.0/releasenotes/</guid>
         <pubDate>Tue, 11 Nov 2025 00:00:00 +0000</pubDate>
-      </item>
-      
-      <item>
-        <title>144.0.2</title>
-        <description>Firefox release 144.0.2 was released on October 28, 2025.</description>
-        <link>https://www.mozilla.org/en-US/firefox/144.0.2/releasenotes/</link>
-        <guid>https://www.mozilla.org/en-US/firefox/144.0.2/releasenotes/</guid>
-        <pubDate>Tue, 28 Oct 2025 00:00:00 +0000</pubDate>
       </item>
       
     </channel>
