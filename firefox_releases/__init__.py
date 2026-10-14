@@ -1,9 +1,3 @@
-"""Package entry point."""
+"""Firefox release data."""
 
-from .releases import (  # noqa: F401
-    Channel,
-    Release,
-    find_release_date,
-    find_release_notes,
-    get_release_dates,
-)
+from .releases import Release, get_release_dates  # noqa: F401
