@@ -37,15 +37,9 @@ tasks:
     desc: Deploy the project by triggering the generate-rss workflow on GitHub Actions
     cmds:
       - gh workflow run generate-rss.yaml
-  help:
-    desc: Show this help message
-    cmds:
-      - task help
   all:
     desc: Run local checks
     cmds:
-      - task test
-      - task lint
       - task pre-commit
 
   venv:
