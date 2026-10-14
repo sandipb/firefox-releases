@@ -1,4 +1,3 @@
-# A github workflow which runs the pre-commit configured for the project.
 name: generate-rss
 
 on:
@@ -6,42 +5,48 @@ on:
   schedule:
     - cron: '0 */3 * * *'
 
+permissions:
+  contents: write
+
 jobs:
   generate-rss:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
-          python-version-file: "pyproject.toml"
+          python-version-file: .python-version
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v10
         with:
           enable-cache: true
-          cache-dependency-glob: "*.py"
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          cache-dependency-glob: uv.lock
 
       - name: Install Task
-        uses: arduino/setup-task@v2
+        uses: arduino/setup-task@v3
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          version: 3.53.1
 
-      - name: Get Changed Files
-        id: files
-        run: |
-          files=$(git diff --name-only refs/remotes/origin/${{ github.base_ref }} | sed 's/ /\\ /g'| xargs)
-          echo "Changed files: '${files}'"
-          echo "list=${files}" >> $GITHUB_OUTPUT
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Test
+        run: task test
 
       - name: Generate RSS, HTML and JSON
         run: |
           mkdir -p public
           task generate
 
+      - name: Warn when feed is unavailable
+        if: ${{ hashFiles('public/index.xml') == '' }}
+        run: echo '::warning::No release data; keeping the last published site'
+
       - name: Publish to ghpages
-        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ hashFiles('public/index.xml') != '' }}
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public

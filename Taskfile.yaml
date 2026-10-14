@@ -17,13 +17,14 @@ tasks:
     cmds:
       - uv run pytest firefox_releases
   lint:
-    desc: Run linting using ruff
+    desc: Check Python lint and formatting with Ruff
     cmds:
       - uv run ruff check .
+      - uv run ruff format --check .
   format:
-    desc: Format code using ruff in fix mode
+    desc: Format Python code with Ruff
     cmds:
-      - uv run ruff check --fix .
+      - uv run ruff format .
   pre-commit:
     desc: Run pre-commit hooks on all files
     cmds:
@@ -35,45 +36,33 @@ tasks:
   deploy:
     desc: Deploy the project by triggering the generate-rss workflow on GitHub Actions
     cmds:
-      - gh workflow run generate-rss --json workflow_dispatch={}
+      - gh workflow run generate-rss.yaml
   help:
     desc: Show this help message
     cmds:
       - task help
   all:
-    desc: "Run all tasks: generate, test, lint, format, pre-commit, build, publish, and deploy"
+    desc: Run local checks
     cmds:
-      - task generate
       - task test
       - task lint
-      - task format
       - task pre-commit
-      - task build
-      - task publish
-      - task deploy
 
   venv:
-    desc: Create a virtual environment using uv
+    desc: Sync the virtual environment with the lockfile
     cmds:
-      - uv venv
-      - uv sync
+      - uv sync --locked
 
   act:
     desc: Run the GitHub Actions locally using act
-
     cmds:
-      - cmd: |
-          if command -v gh > /dev/null; then
-              # Don't want to interfere with existing GITHUB_TOKEN
-              export GHTOKEN=$(gh auth token)
-          fi
-        silent: true
       - |
+        GHTOKEN=$(gh auth token)
         act workflow_dispatch \
           -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-latest \
           --container-architecture=linux/arm64 \
           --pull=false \
-          -s GITHUB_TOKEN=$GHTOKEN
+          -s GITHUB_TOKEN="$GHTOKEN"
 
   serve:
     desc: Serve the generated files using uv

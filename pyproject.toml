@@ -3,25 +3,25 @@ name = "firefox-releases"
 version = "0.1.0"
 description = "List Firefox releases"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 dependencies = [
-    "beautifulsoup4>=4.12.3",
-    "jinja2>=3.1.4",
-    "requests>=2.32.3",
+    "beautifulsoup4>=4.15.0",
+    "jinja2>=3.1.6",
+    "requests>=2.34.2",
 ]
 authors = [
     { name = "Sandip Bhattacharya", email = "sandipb@showmethesource.org" }
 ]
 license = "Apache-2.0"
 
-[tool.uv]
-dev-dependencies = [
-    "ipython>=8.28.0",
-    "pre-commit>=4.0.1",
-    "pylint>=3.3.1",
-    "pytest>=8.3.3",
-    "pytest-mock>=3.14.0",
-    "ruff>=0.6.9",
+[dependency-groups]
+dev = [
+    "ipython>=9.17.1",
+    "pre-commit>=4.7.0",
+    "pylint>=4.1.3",
+    "pytest>=9.1.1",
+    "pytest-mock>=3.16.0",
+    "ruff>=0.17.0",
 ]
 
 [project.urls]
