@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Script to generate an RSS feed of Firefox releases."""
+
 import argparse
 import json
 import logging
@@ -11,6 +12,7 @@ from jinja2 import Environment, FileSystemLoader
 from firefox_releases import get_release_dates
 
 THIS_DIR = pathlib.Path(__file__).parent
+logger = logging.getLogger(__name__)
 
 
 def get_parsed_args():
@@ -23,7 +25,7 @@ def get_parsed_args():
         "-o",
         "--output-dir",
         type=str,
-        default=pathlib.Path(".").resolve(),
+        default=pathlib.Path.cwd(),
         help="The output directory (default: %(default)s).",
     )
     parser.add_argument(
@@ -66,16 +68,19 @@ def main(args: argparse.Namespace):
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
-    logging.info("Generating RSS feed and HTML with %d entries", args.num_entries)
-    logging.info("Loading templates")
+    logger.info("Generating RSS feed and HTML with %d entries", args.num_entries)
+    logger.info("Loading templates")
     environment = Environment(loader=FileSystemLoader(THIS_DIR / "templates"))
     rss_template = environment.get_template("index.xml.j2")
     html_template = environment.get_template("index.html.j2")
 
-    logging.info("Fetching release notes")
+    logger.info("Fetching release notes")
     # releases = find_release_notes(
     #     max_num=args.num_entries, max_parse=int(1.5 * args.num_entries)
     releases = get_release_dates()[: args.num_entries]
+    if not releases:
+        logger.warning("No release data available; leaving published files unchanged")
+        return
 
     # Fill in the entries
     entries: list[dict] = []  # pylint: disable=invalid-name
@@ -96,19 +101,21 @@ def main(args: argparse.Namespace):
     rss_file_name = pathlib.Path(args.output_dir) / f"{args.filename_prefix}.xml"
     rss_content = rss_template.render(releases=entries)
     html_file_name = pathlib.Path(args.output_dir) / f"{args.filename_prefix}.html"
-    html_content = html_template.render(releases=entries, latest=entries[0])
+    html_content = html_template.render(releases=entries)
     json_file_name = pathlib.Path(args.output_dir) / f"{args.filename_prefix}.json"
     json_content = json.dumps(entries)
 
-    logging.info("Generating RSS feed to %s", rss_file_name)
-    with open(rss_file_name, "w", encoding="utf-8") as f:
-        f.write(rss_content)
+    if not args.skip_rss:
+        logger.info("Generating RSS feed to %s", rss_file_name)
+        with open(rss_file_name, "w", encoding="utf-8") as f:
+            f.write(rss_content)
 
-    logging.info("Generating HTML content to %s", html_file_name)
-    with open(html_file_name, "w", encoding="utf-8") as f:
-        f.write(html_content)
+    if not args.skip_html:
+        logger.info("Generating HTML content to %s", html_file_name)
+        with open(html_file_name, "w", encoding="utf-8") as f:
+            f.write(html_content)
 
-    logging.info("Generating JSON content to %s", json_file_name)
+    logger.info("Generating JSON content to %s", json_file_name)
     with open(json_file_name, "w", encoding="utf-8") as f:
         f.write(json_content)
 

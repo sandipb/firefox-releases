@@ -1,7 +1,9 @@
-""" Find the release notes for the latest version of Firefox and print it as a list. """
+"""Find the release notes for the latest version of Firefox and print it as a list."""
+
 import json
 import logging
 import os
+import time
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 from enum import Enum
@@ -65,9 +67,19 @@ def find_release_date(release_url: str) -> datetime | None:
 
 
 def _fetch_url_content(url: str) -> str:
-    response = requests.get(url, timeout=5)
-    response.raise_for_status()
-    return response.content
+    for attempt in range(3):
+        try:
+            response = requests.get(url, timeout=5)
+            if response.status_code in {429, 500, 502, 503, 504} and attempt < 2:
+                time.sleep(2**attempt)
+                continue
+            response.raise_for_status()
+            return response.content
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+            if attempt == 2:
+                raise
+            time.sleep(2**attempt)
+    raise RuntimeError("unreachable")
 
 
 def version_to_release_url(version: str) -> str:
@@ -78,10 +90,13 @@ def version_to_release_url(version: str) -> str:
 def get_release_dates(
     release_list_url=WT_API_RELEASES_URL,
     # esr_list_url=WT_API_ESR_URL,
-    oldest=date.today() - timedelta(days=365),
+    oldest: date | None = None,
 ) -> list[Release]:
     """Fetch the list of releases from the WT API and return the dates of the releases."""
     logger.debug("Fetching release list from %s", release_list_url)
+    today = date.today()
+    if oldest is None:
+        oldest = today - timedelta(days=365)
     release_list: list[Release] = []
     try:
         releases_content = _fetch_url_content(release_list_url)
@@ -103,6 +118,11 @@ def get_release_dates(
                 release_name,
                 release_date,
                 oldest - release_date,
+            )
+            continue
+        if release_date > today:
+            logger.debug(
+                "Ignoring future release %s with date %s", release_name, release_date
             )
             continue
         release_channel = Channel.RELEASE
@@ -191,4 +211,4 @@ if __name__ == "__main__":
         20 if "RELEASE_MAX" not in os.environ else int(os.environ["RELEASE_MAX"]),
     )
     for i, release in enumerate(releases):
-        print(f"{i+1}: {release.name} - {release.date} - {release.url}")
+        print(f"{i + 1}: {release.name} - {release.date} - {release.url}")
