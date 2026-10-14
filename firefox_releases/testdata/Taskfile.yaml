@@ -1,0 +1,24 @@
+version: '3'
+
+tasks:
+  refresh:
+    desc: Download and validate the Firefox release API fixture
+    cmds:
+      - |
+        uv run python - <<'PY'
+        import json
+        from datetime import date
+        from pathlib import Path
+        from urllib.request import urlopen
+
+        with urlopen("https://whattrainisitnow.com/api/firefox/releases/", timeout=20) as response:
+            releases = json.load(response)
+        if not isinstance(releases, dict) or not releases:
+            raise ValueError("Expected a nonempty mapping of versions to dates")
+        for version, released in releases.items():
+            tuple(map(int, version.split(".")))
+            date.fromisoformat(released)
+        Path("wt_releases.json").write_text(
+            json.dumps(releases, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        PY
