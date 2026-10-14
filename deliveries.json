@@ -1,0 +1,11 @@
+{
+  "destinations": {
+    "discord-test": {
+      "158.0": {
+        "attempts": 1,
+        "status": "pending"
+      }
+    }
+  },
+  "schema": 1
+}
