@@ -2,13 +2,91 @@ name: generate-rss
 
 on:
   workflow_dispatch:
+    inputs:
+      operation:
+        description: Announcement operation (baseline never posts; replay is test only)
+        type: choice
+        default: run
+        options:
+          - run
+          - baseline
+          - test-replay
+      target:
+        description: Announcement destination
+        type: choice
+        default: none
+        options:
+          - none
+          - discord-test
+          - production
   schedule:
     - cron: '0 */3 * * *'
 
 permissions:
   contents: write
 
+concurrency:
+  group: generate-rss
+  cancel-in-progress: false
+
 jobs:
+  announce:
+    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.target != 'none') || (github.event_name == 'schedule' && (vars.ANNOUNCE_TEST == 'true' || vars.ANNOUNCE_PRODUCTION == 'true')) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version-file: .python-version
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.3.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Test
+        run: uv run pytest firefox_releases
+
+      - name: Announce releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DISCORD_TEST_WEBHOOK: ${{ secrets.DISCORD_TEST_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          MASTODON_TOKEN: ${{ secrets.MASTODON_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          OPERATION: ${{ inputs.operation }}
+          TARGET: ${{ inputs.target }}
+          ANNOUNCE_TEST: ${{ vars.ANNOUNCE_TEST }}
+          ANNOUNCE_PRODUCTION: ${{ vars.ANNOUNCE_PRODUCTION }}
+        shell: bash
+        run: |
+          args=()
+          if [[ "$EVENT_NAME" == workflow_dispatch ]]; then
+            case "$TARGET" in
+              discord-test) args+=(--destination discord-test) ;;
+              production) args+=(--destination discord --destination mastodon) ;;
+              *) echo '::error::Unknown announcement target'; exit 1 ;;
+            esac
+            case "$OPERATION" in
+              run|baseline) ;;
+              test-replay)
+                [[ "$TARGET" == discord-test ]] || { echo '::error::Replay is test only'; exit 1; }
+                ;;
+              *) echo '::error::Unknown announcement operation'; exit 1 ;;
+            esac
+            args+=(--operation "$OPERATION")
+          else
+            [[ "$ANNOUNCE_TEST" != true ]] || args+=(--destination discord-test)
+            [[ "$ANNOUNCE_PRODUCTION" != true ]] || args+=(--destination discord --destination mastodon)
+            args+=(--operation run)
+          fi
+          uv run python -m firefox_releases.announcements "${args[@]}"
+
   generate-rss:
     runs-on: ubuntu-latest
     steps:

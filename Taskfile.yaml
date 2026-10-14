@@ -10,6 +10,11 @@ vars:
   DOCS_URL: "firefox-releases.foss-community.org"
 
 tasks:
+  announce:
+    desc: Run release announcements (requires configured credentials and destination)
+    cmds:
+      - uv run python -m firefox_releases.announcements {{.CLI_ARGS}}
+
   generate:
     desc: Generate RSS, HTML and JSON files for latest Firefox releases
     cmds:
