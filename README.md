@@ -21,4 +21,6 @@ task serve     # Serve public/ locally
 
 Tests use mocked HTTP responses and never contact the live API. PR and publishing workflows run tests. Dependabot checks Python dependencies, CI actions, and pre-commit hooks weekly.
 
+Run `task fixtures:refresh` to download and validate the API fixture, then review the JSON diff. Its refresh task lives in `firefox_releases/testdata/Taskfile.yaml`. The generation test uses a fixed date so newer releases do not change its expected output.
+
 To run the workflow locally, install `act` and `gh`, sign in with `gh auth login`, then run `task act`. To trigger publishing on GitHub, run `task deploy`.

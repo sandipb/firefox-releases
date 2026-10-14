@@ -2,7 +2,7 @@
 
 import json
 from datetime import date
-from functools import partial
+from pathlib import Path
 from unittest.mock import Mock
 from xml.etree import ElementTree
 
@@ -17,35 +17,43 @@ from firefox_releases.releases import get_release_dates
 def api(monkeypatch):
     response = requests.Response()
     response.status_code = 200
-    response._content = b'{"125.2":"2024-03-19","125.10":"2024-03-19","124.0":"2024-03-05","123.0":"2024-02-20","999.0":"2099-01-01"}'
+    response._content = (
+        Path(__file__).with_name("testdata").joinpath("wt_releases.json").read_bytes()
+    )
     get = Mock(return_value=response)
     monkeypatch.setattr(requests, "get", get)
     monkeypatch.setattr("firefox_releases.releases.time.sleep", Mock())
-    monkeypatch.setattr(
-        generate,
-        "get_release_dates",
-        partial(get_release_dates, oldest=date(2024, 3, 1)),
-    )
+    clock = Mock(wraps=date)
+    clock.today.return_value = date(2026, 10, 14)
+    monkeypatch.setattr("firefox_releases.releases.date", clock)
     return get
 
 
-def test_generate_filters_sorts_limits_and_renders(api, tmp_path):
+def test_generate_downloaded_fixture(api, tmp_path):
     generate.main(generate.get_parsed_args(["-o", str(tmp_path), "-n", "2"]))
 
     data = json.loads((tmp_path / "index.json").read_text())
-    assert [item["name"] for item in data] == ["125.10", "125.2"]
-    assert data[0]["time"] == "Tue, 19 Mar 2024 00:00:00 +0000"
+    assert [item["name"] for item in data] == ["158.0", "157.0.1"]
+    assert data[0]["time"] == "Tue, 13 Oct 2026 00:00:00 +0000"
 
     items = ElementTree.parse(tmp_path / "index.xml").findall("./channel/item")
-    assert [item.findtext("title") for item in items] == ["125.10", "125.2"]
+    assert [item.findtext("title") for item in items] == ["158.0", "157.0.1"]
     assert (
         items[0].findtext("link")
-        == "https://www.mozilla.org/en-US/firefox/125.10/releasenotes/"
+        == "https://www.mozilla.org/en-US/firefox/158.0/releasenotes/"
     )
     html = (tmp_path / "index.html").read_text()
-    assert "125.10/releasenotes/" in html
-    assert "125.2/releasenotes/" in html
-    assert "124.0/releasenotes/" not in html
+    assert "158.0/releasenotes/" in html
+    assert "157.0.1/releasenotes/" in html
+    assert "157.0/releasenotes/" not in html
+
+
+def test_filtering_and_numeric_order(api):
+    api.return_value._content = b'{"125.2":"2024-03-19","125.10":"2024-03-19","123.0":"2024-02-20","999.0":"2099-01-01"}'
+
+    releases = get_release_dates(oldest=date(2024, 3, 1))
+
+    assert [release.name for release in releases] == ["125.10", "125.2"]
 
 
 @pytest.mark.parametrize(
@@ -66,7 +74,7 @@ def test_transient_failure_recovers(api, tmp_path):
 
     generate.main(generate.get_parsed_args(["-o", str(tmp_path)]))
 
-    assert len(json.loads((tmp_path / "index.json").read_text())) == 3
+    assert json.loads((tmp_path / "index.json").read_text())[0]["name"] == "158.0"
     assert api.call_count == 2
 
 

@@ -1,6 +1,11 @@
 # Taskfile.yaml
 version: "3"
 
+includes:
+  fixtures:
+    taskfile: ./firefox_releases/testdata/Taskfile.yaml
+    dir: ./firefox_releases/testdata
+
 vars:
   DOCS_URL: "firefox-releases.foss-community.org"
 
