@@ -1,10 +1,366 @@
 {
   "destinations": {
+    "discord": {
+      "144.0.2": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "145.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "145.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "145.0.2": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "146.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "146.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "147.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "147.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "147.0.2": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "147.0.3": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "147.0.4": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "148.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "148.0.2": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "149.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "149.0.2": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "150.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "150.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "150.0.2": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "150.0.3": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "151.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "151.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "151.0.2": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "151.0.3": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "151.0.4": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "152.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "152.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "152.0.2": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "152.0.3": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "152.0.4": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "152.0.5": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "152.0.6": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "153.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "153.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "153.0.3": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "153.0.4": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "154.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "154.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "155.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "155.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "156.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "156.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "157.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "157.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "158.0": {
+        "attempts": 0,
+        "status": "baselined"
+      }
+    },
     "discord-test": {
       "158.0": {
         "attempts": 1,
         "post_id": "1560035695341338634",
         "status": "delivered"
+      }
+    },
+    "mastodon": {
+      "144.0.2": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "145.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "145.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "145.0.2": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "146.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "146.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "147.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "147.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "147.0.2": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "147.0.3": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "147.0.4": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "148.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "148.0.2": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "149.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "149.0.2": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "150.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "150.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "150.0.2": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "150.0.3": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "151.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "151.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "151.0.2": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "151.0.3": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "151.0.4": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "152.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "152.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "152.0.2": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "152.0.3": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "152.0.4": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "152.0.5": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "152.0.6": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "153.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "153.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "153.0.3": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "153.0.4": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "154.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "154.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "155.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "155.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "156.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "156.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "157.0": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "157.0.1": {
+        "attempts": 0,
+        "status": "baselined"
+      },
+      "158.0": {
+        "attempts": 0,
+        "status": "baselined"
       }
     }
   },
