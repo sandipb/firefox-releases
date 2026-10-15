@@ -8,6 +8,7 @@ from unittest.mock import Mock
 import pytest
 import requests
 
+import generate
 from firefox_releases import announcements
 
 
@@ -63,8 +64,23 @@ def delivery(monkeypatch, tmp_path):
     post = Mock(return_value=response({"id": "post-1"}))
     monkeypatch.setattr(requests, "post", post)
 
+    snapshots = 0
+
     def run(*args):
-        return announcements.main(["--state-file", str(tmp_path / "state.json"), *args])
+        nonlocal snapshots
+        snapshots += 1
+        output = tmp_path / f"snapshot-{snapshots}"
+        output.mkdir()
+        generate.main(generate.get_parsed_args(["-o", str(output)]))
+        return announcements.main(
+            [
+                "--feed",
+                str(output / "index.xml"),
+                "--state-file",
+                str(tmp_path / "state.json"),
+                *args,
+            ]
+        )
 
     return run, post, source, storage, remote, tmp_path / "state.json"
 
@@ -272,3 +288,109 @@ def test_last_error_describes_most_recent_failure(delivery):
     assert run("--destination", "discord-test") == 1
     record = json.loads(state.read_text())["destinations"]["discord-test"]["158.0"]
     assert record["last_error"] == "Posting failed or outcome uncertain"
+
+
+def test_announcements_use_rendered_rss_without_refetching(delivery, tmp_path):
+    import generate
+
+    _, post, source, _, _, _ = delivery
+    generate.main(generate.get_parsed_args(["-o", str(tmp_path)]))
+    assert source.call_count == 1
+    # Upstream now has another release; announcements must use the saved RSS.
+    source.return_value = response({"159.0": "2026-10-14"})
+    assert (
+        announcements.main(
+            [
+                "--feed",
+                str(tmp_path / "index.xml"),
+                "--state-file",
+                str(tmp_path / "state.json"),
+                "--destination",
+                "discord-test",
+                "--operation",
+                "test-replay",
+            ]
+        )
+        == 0
+    )
+    assert source.call_count == 1
+    assert "Firefox release 158.0" in post.call_args.kwargs["json"]["content"]
+
+
+@pytest.mark.parametrize("content", [None, "broken XML", "<rss><channel/></rss>"])
+def test_unusable_snapshot_does_not_fetch_or_change_delivery_state(
+    delivery, tmp_path, content
+):
+    _, post, source, storage, _, _ = delivery
+    feed = tmp_path / "missing.xml"
+    if content is not None:
+        feed.write_text(content)
+    assert (
+        announcements.main(
+            [
+                "--feed",
+                str(feed),
+                "--destination",
+                "discord-test",
+                "--operation",
+                "test-replay",
+            ]
+        )
+        == 1
+    )
+    source.assert_not_called()
+    storage.assert_not_called()
+    post.assert_not_called()
+
+
+def test_stale_public_rss_prevents_delivery(delivery, tmp_path, monkeypatch):
+    _, post, source, storage, _, _ = delivery
+    generate.main(generate.get_parsed_args(["-o", str(tmp_path)]))
+    source.return_value = response({})
+    monkeypatch.setattr("firefox_releases.announcements.time.sleep", Mock())
+    assert (
+        announcements.main(
+            [
+                "--feed",
+                str(tmp_path / "index.xml"),
+                "--published-url",
+                "https://feed.example/index.xml",
+                "--destination",
+                "discord-test",
+                "--operation",
+                "test-replay",
+            ]
+        )
+        == 1
+    )
+    storage.assert_not_called()
+    post.assert_not_called()
+
+
+def test_delivery_waits_for_public_rss_to_match(delivery, tmp_path, monkeypatch):
+    _, post, source, _, _, _ = delivery
+    generate.main(generate.get_parsed_args(["-o", str(tmp_path)]))
+    fresh = requests.Response()
+    fresh.status_code = 200
+    fresh._content = (tmp_path / "index.xml").read_bytes()
+    source.side_effect = [requests.Timeout(), response({}), fresh]
+    monkeypatch.setattr("firefox_releases.announcements.time.sleep", Mock())
+    assert (
+        announcements.main(
+            [
+                "--feed",
+                str(tmp_path / "index.xml"),
+                "--published-url",
+                "https://feed.example/index.xml",
+                "--state-file",
+                str(tmp_path / "state.json"),
+                "--destination",
+                "discord-test",
+                "--operation",
+                "test-replay",
+            ]
+        )
+        == 0
+    )
+    assert post.call_count == 1
+    assert source.call_args.args == ("https://feed.example/index.xml",)

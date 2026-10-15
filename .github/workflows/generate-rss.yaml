@@ -30,8 +30,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  announce:
-    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.target != 'none') || (github.event_name == 'schedule' && (vars.ANNOUNCE_TEST == 'true' || vars.ANNOUNCE_PRODUCTION == 'true')) }}
+  generate-rss:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
@@ -46,14 +45,45 @@ jobs:
           enable-cache: true
           cache-dependency-glob: uv.lock
 
+      - name: Install Task
+        uses: arduino/setup-task@v3.0.0
+        with:
+          version: 3.53.1
+
       - name: Install dependencies
         run: uv sync --locked
 
       - name: Test
-        run: uv run pytest firefox_releases
+        run: task test
+
+      - name: Generate RSS, HTML and JSON
+        id: generate
+        run: |
+          output=$(mktemp -d "$RUNNER_TEMP/firefox-releases.XXXXXX")
+          task generate OUTPUT_DIR="$output"
+          echo "directory=$output" >> "$GITHUB_OUTPUT"
+          if test -s "$output/index.xml"; then
+            echo 'fresh=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'fresh=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Warn when feed is unavailable
+        if: ${{ steps.generate.outputs.fresh != 'true' }}
+        run: echo '::warning::No release data; keeping the last published site'
+
+      - name: Publish to ghpages
+        id: publish
+        if: ${{ steps.generate.outputs.fresh == 'true' }}
+        uses: peaceiris/actions-gh-pages@v4.1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ steps.generate.outputs.directory }}
 
       - name: Announce releases
+        if: ${{ steps.generate.outputs.fresh == 'true' && steps.publish.outcome == 'success' && ((github.event_name == 'workflow_dispatch' && inputs.target != 'none') || (github.event_name == 'schedule' && (vars.ANNOUNCE_TEST == 'true' || vars.ANNOUNCE_PRODUCTION == 'true'))) }}
         env:
+          RELEASE_FEED: ${{ steps.generate.outputs.directory }}/index.xml
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DISCORD_TEST_WEBHOOK: ${{ secrets.DISCORD_TEST_WEBHOOK }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
@@ -85,46 +115,4 @@ jobs:
             [[ "$ANNOUNCE_PRODUCTION" != true ]] || args+=(--destination discord --destination mastodon)
             args+=(--operation run)
           fi
-          uv run python -m firefox_releases.announcements "${args[@]}"
-
-  generate-rss:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7.0.1
-
-      - uses: actions/setup-python@v7.0.0
-        with:
-          python-version-file: .python-version
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v10.3.0
-        with:
-          enable-cache: true
-          cache-dependency-glob: uv.lock
-
-      - name: Install Task
-        uses: arduino/setup-task@v3.0.0
-        with:
-          version: 3.53.1
-
-      - name: Install dependencies
-        run: uv sync --locked
-
-      - name: Test
-        run: task test
-
-      - name: Generate RSS, HTML and JSON
-        run: |
-          mkdir -p public
-          task generate
-
-      - name: Warn when feed is unavailable
-        if: ${{ hashFiles('public/index.xml') == '' }}
-        run: echo '::warning::No release data; keeping the last published site'
-
-      - name: Publish to ghpages
-        if: ${{ hashFiles('public/index.xml') != '' }}
-        uses: peaceiris/actions-gh-pages@v4.1.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          uv run python -m firefox_releases.announcements --feed "$RELEASE_FEED" --published-url https://firefox-releases.foss-community.org/index.xml "${args[@]}"
