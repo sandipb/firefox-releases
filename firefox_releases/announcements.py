@@ -9,10 +9,11 @@ import os
 import time
 from email.utils import parsedate_to_datetime
 from pathlib import Path
+from xml.etree import ElementTree
 
 import requests
 
-from firefox_releases.releases import get_release_dates
+from firefox_releases.releases import Release
 
 logger = logging.getLogger(__name__)
 DESTINATIONS = ("discord-test", "discord", "mastodon")
@@ -154,11 +155,55 @@ def main(argv=None):
         "--operation", choices=("run", "baseline", "test-replay"), default="run"
     )
     parser.add_argument("--state-file", default="announcement-state.json")
+    parser.add_argument(
+        "--feed", required=True, help="RSS snapshot published by this run"
+    )
+    parser.add_argument(
+        "--published-url", help="Wait until this public RSS matches the snapshot"
+    )
     args = parser.parse_args(argv)
     destinations = list(dict.fromkeys(args.destination))
     try:
         if args.operation == "test-replay" and destinations != ["discord-test"]:
             raise StateError("Replay is restricted to test Discord")
+        try:
+            releases = [
+                Release(
+                    name=item.findtext("title"),
+                    url=item.findtext("link"),
+                    date=parsedate_to_datetime(item.findtext("pubDate")).date(),
+                )
+                for item in ElementTree.parse(args.feed).findall("./channel/item")
+            ]
+            if not releases or any(
+                not release.name or not release.url for release in releases
+            ):
+                raise ValueError
+        except (ElementTree.ParseError, OSError, ValueError, TypeError):
+            raise StateError(
+                "No usable published RSS snapshot; state unchanged"
+            ) from None
+        if args.published_url:
+            snapshot = Path(args.feed).read_bytes()
+            digest = hashlib.sha256(snapshot).hexdigest()
+            for attempt in range(12):
+                try:
+                    published = requests.get(
+                        args.published_url,
+                        params={"snapshot": digest, "attempt": attempt},
+                        headers={"Cache-Control": "no-cache"},
+                        timeout=10,
+                    )
+                    if published.status_code == 200 and published.content == snapshot:
+                        break
+                except requests.RequestException:
+                    pass
+                if attempt < 11:
+                    time.sleep(10)
+            else:
+                raise StateError(
+                    "Public RSS has not updated to this snapshot; state unchanged"
+                )
         store = GitHubState(args.state_file)
         state = store.load()
         if args.operation == "run" and any(
@@ -171,10 +216,6 @@ def main(argv=None):
             d in state["destinations"] for d in destinations
         ):
             raise StateError("Destination already initialized; refusing to reset state")
-        releases = get_release_dates()
-        if not releases:
-            logger.error("No usable release data; state unchanged")
-            return 1
         latest = releases[0]
         if args.operation == "baseline":
             for destination in destinations:

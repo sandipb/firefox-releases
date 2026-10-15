@@ -27,7 +27,7 @@ To run the workflow locally, install `act` and `gh`, sign in with `gh auth login
 
 ## Discord and Mastodon announcements
 
-The same three-hour workflow can announce the latest eligible release directly to Discord and `firefox_releases@mastodon.social`. Website publishing and announcements run as independent jobs. Announcements stay disabled on scheduled runs until their repository variables are enabled; manual runs use the selected operation and target regardless of those variables.
+The same three-hour workflow can announce the latest eligible release directly to Discord and `firefox_releases@mastodon.social`. The workflow fetches release data once, renders into a fresh output directory, publishes those files, then announces from that same RSS snapshot. It checks the public RSS up to 12 times, ten seconds apart, and sends only once it matches the snapshot. A fetch, rendering, publishing, or public-feed verification failure prevents announcements. Subsequent posting failures cannot block the completed website publication. Announcements stay disabled on scheduled runs until their repository variables are enabled; manual runs use the selected operation and target regardless of those variables.
 
 Configure these GitHub Actions secrets:
 
@@ -64,17 +64,17 @@ To run production announcements manually after initialization:
 gh workflow run generate-rss.yaml -f operation=run -f target=production
 ```
 
-`task deploy` retains website-only publishing: the default manual target is `none`. For local announcement commands, provide `GITHUB_REPOSITORY`, `GITHUB_TOKEN`, and the destination secrets in the environment. Do not run local state-changing commands concurrently with the workflow; workflow serialization cannot protect local invocations.
+`task deploy` retains website-only publishing: the default manual target is `none`. For local announcement commands, supply a freshly generated feed whose publication has succeeded, and provide `GITHUB_REPOSITORY`, `GITHUB_TOKEN`, and the destination secrets in the environment. Do not run local state-changing commands concurrently with the workflow; workflow serialization cannot protect local invocations.
 
 ```sh
-task announce -- --destination discord-test --operation run
+task announce -- --feed public/index.xml --published-url https://firefox-releases.foss-community.org/index.xml --destination discord-test --operation run
 ```
 
 ### State, retries, and recovery
 
 Delivery state lives in `deliveries.json` on the `announcement-state` branch, separately for test Discord, production Discord, and Mastodon. Inspect that file and the Actions logs for delivery status, attempts, errors, retry timing, and returned post IDs. Each send records its intent first and saves its result immediately afterward. If saving fails, further sends stop. Missing initialization or corrupt state prevents normal posting; baseline refuses to reset an initialized destination.
 
-Failed deliveries retry on the next three-hour run, respecting rate-limit retry timing. Each destination proceeds independently when another fails. Only the latest eligible release is announced: when a newer release arrives, older pending or failed deliveries become superseded. Intermediate releases are not backfilled.
+Failed deliveries retry after fresh generation and successful publication on a subsequent three-hour run, respecting rate-limit retry timing. An unchanged latest release can still be retried; unavailable upstream data or a publishing failure postpones retries. Each destination proceeds independently when another fails. Only the latest eligible release is announced: when a newer release arrives, older pending or failed deliveries become superseded. Intermediate releases are not backfilled.
 
 A request can succeed remotely before its result is saved, so retrying can produce a duplicate. Mastodon uses a stable idempotency key, but the server retains keys for only up to one hour, shorter than the scheduled retry interval. Discord webhook delivery has no equivalent duplicate protection.
 
