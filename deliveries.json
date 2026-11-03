@@ -389,7 +389,8 @@
       },
       "159.0.1": {
         "attempts": 1,
-        "status": "pending"
+        "post_id": "117553139044601258",
+        "status": "delivered"
       }
     }
   },
