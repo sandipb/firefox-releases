@@ -399,7 +399,8 @@
       },
       "160.0": {
         "attempts": 1,
-        "status": "pending"
+        "post_id": "117593485774974003",
+        "status": "delivered"
       }
     }
   },
