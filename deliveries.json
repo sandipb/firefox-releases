@@ -194,7 +194,8 @@
       },
       "160.0": {
         "attempts": 1,
-        "status": "pending"
+        "post_id": "1569776118498726021",
+        "status": "delivered"
       }
     },
     "discord-test": {
