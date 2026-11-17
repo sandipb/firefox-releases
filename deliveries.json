@@ -409,7 +409,8 @@
       },
       "160.0.1": {
         "attempts": 1,
-        "status": "pending"
+        "post_id": "117633130932410471",
+        "status": "delivered"
       }
     }
   },
